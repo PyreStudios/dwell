@@ -60,4 +60,5 @@ void main() async {
 
   var post = await table.findById('abc-123', idColumn: 'uuid');
   print(post.toMap());
+  await _adapter.close();
 }
