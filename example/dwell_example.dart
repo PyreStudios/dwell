@@ -53,7 +53,7 @@ void main() async {
     );
 ''');
 
-  await table.delete().where(Column('uuid'), '=', p.uuid).execute();
+  await table.delete().where(PostsTable.uuid, '=', p.uuid).execute();
 
   // violates a key constraint since the ID is not unique.
   await table.insert(p);
