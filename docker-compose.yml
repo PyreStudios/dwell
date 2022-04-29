@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  db:
+    image: "postgres:14"
+    restart: always
+    environment:
+      - POSTGRES_USER=dart
+      - POSTGRES_PASSWORD=dart
+      - POSTGRES_DB=dart_test
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
