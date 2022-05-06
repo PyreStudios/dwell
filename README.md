@@ -11,13 +11,19 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+<p align="center">
+  <h1 align="center">Dwell</h1>
+  
+  <h2 align="center">A reflection based data abstraction layer for Dart.</h2>
+</p>
+
+This package is intended for non-clientside development (servers, clis, etc). It uses reflection and will not work with Flutter (sorry). If you find this package useful, please voice your opinion on [keeping reflection around in dart here](https://github.com/dart-lang/sdk/issues/44489).
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+Dwell helps create a data abstraction layer (like an ORM sort of, but not quite) by providing a DSL for creating and executing queries against common databases. Dwell tries to keep you in control of your queries, but helps abstract some of the pain points away.
 
+Currently, we only support Postgres, but adding adapter support for other databases should be relatively painless.
 ## Getting started
 
 TODO: List prerequisites and provide or point to information on how to
@@ -25,11 +31,68 @@ start using the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
-
 ```dart
-const like = 'sample';
+import 'package:dwell/dwell.dart';
+import 'package:dwell/src/adapters/postgres_adapter.dart';
+import 'package:postgres/postgres.dart';
+
+class Post implements SchemaObject {
+  String uuid;
+  String content;
+
+  Post(this.uuid, this.content);
+
+  Post.fromMap(Map<String, dynamic> map) : this(map['uuid'], map['content']);
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'uuid': uuid,
+      'content': content,
+    };
+  }
+}
+
+final _adapter = PostgresAdapter(
+    connection: PostgreSQLConnection("localhost", 5432, "dart_test",
+        username: "dart", password: "dart"));
+
+class PostsTable extends Table<Post> {
+  @override
+  Adapter get adapter => _adapter;
+
+  @override
+  String get tableName => 'posts';
+
+  static final uuid = Column<String>('uuid');
+  static final content = Column<String>('content');
+}
+
+void main() async {
+  var p = Post(
+    'abc-12345',
+    'This is a test post',
+  );
+
+  var table = PostsTable();
+
+  await _adapter.open();
+
+  await _adapter.connection.execute('''
+    CREATE TABLE IF NOT EXISTS posts (
+      uuid varchar(255) NOT NULL,
+      content text NOT NULL,
+      PRIMARY KEY (uuid)
+    );
+''');
+
+  await table.delete().where(PostsTable.uuid, '=', p.uuid).execute();
+  await table.insert(p);
+
+  var post = await table.findById('abc-123', idColumn: 'uuid');
+  print(post.toMap());
+  await _adapter.close();
+}
 ```
 
 ## Additional information
