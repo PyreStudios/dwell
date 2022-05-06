@@ -61,6 +61,15 @@ class Query extends _BaseQuery {
         .toList()
         .cast<T>();
   }
+
+  Future<T> single<T extends SchemaObject>() async {
+    final results = await collect<T>();
+    if (results.length > 1) {
+      throw Exception('More than one result found');
+    }
+
+    return results.first;
+  }
 }
 
 class Update<T extends SchemaObject> extends _BaseQuery {
