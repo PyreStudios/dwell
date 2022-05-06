@@ -1,16 +1,7 @@
+import 'package:dwell/src/adapter.dart';
 import 'package:dwell/src/adapter_utils.dart';
 import 'package:dwell/src/query.dart';
 import 'package:postgres/postgres.dart';
-
-abstract class Adapter {
-  Future<void> open();
-  Future<void> close();
-  Future<void> delete(Delete delete);
-  Future<void> insert(Insert insert);
-  Future<void> update(Update update);
-  Future<List<Map<String, dynamic>>> query(Query query,
-      {String? where, String? orderBy});
-}
 
 class PostgresAdapter implements Adapter {
   PostgreSQLConnection connection;
