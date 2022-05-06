@@ -1,3 +1,4 @@
+import 'package:dwell/dwell.dart';
 import 'package:dwell/src/adapters/postgres_adapter.dart';
 import 'package:dwell/src/query.dart';
 
