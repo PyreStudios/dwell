@@ -19,7 +19,7 @@ class PostgresAdapter implements Adapter {
 
   @override
   Future<void> delete(Delete delete) async {
-    var query = "DELETE FROM ${delete.table.name}";
+    var query = "DELETE FROM ${delete.table.dwellTableName}";
     if (delete.clauses.isNotEmpty) {
       query += " WHERE ";
       for (var i = 0; i < delete.clauses.length; i++) {
@@ -44,7 +44,7 @@ class PostgresAdapter implements Adapter {
       return strQuote(insert.item.toMap()[e.columnName]);
     }).join(", ");
     var query =
-        "INSERT INTO ${insert.table.name} ($columnNames) VALUES ($values)";
+        "INSERT INTO ${insert.table.dwellTableName} ($columnNames) VALUES ($values)";
 
     print(query);
     return connection.execute(query).then((value) {});
@@ -61,7 +61,7 @@ class PostgresAdapter implements Adapter {
       return '${e.columnName} = ${strQuote(item[e.columnName])}';
     }).join(", ");
     final query =
-        "UPDATE ${update.table.name} SET $values WHERE ${pkCol.columnName} = ${strQuote(item[pkCol.columnName])}";
+        "UPDATE ${update.table.dwellTableName} SET $values WHERE ${pkCol.columnName} = ${strQuote(item[pkCol.columnName])}";
 
     print(query);
 
@@ -71,7 +71,7 @@ class PostgresAdapter implements Adapter {
   @override
   Future<List<Map<String, dynamic>>> query(Query query,
       {String? where, String? orderBy}) async {
-    var querySql = "SELECT * FROM ${query.table.name}";
+    var querySql = "SELECT * FROM ${query.table.dwellTableName}";
     if (query.clauses.isNotEmpty) {
       querySql += " WHERE ";
       for (var i = 0; i < query.clauses.length; i++) {

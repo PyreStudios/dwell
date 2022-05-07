@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:dwell/dwell.dart';
 import 'package:dwell/src/adapter_utils.dart';
 
@@ -11,10 +9,10 @@ class Column<T> {
 }
 
 abstract class Table<T extends SchemaObject> {
-  String name;
+  String dwellTableName;
   Adapter get adapter;
 
-  Table({required this.name});
+  Table({required String name}) : dwellTableName = name;
 
   /// findByPk is a convenience method for finding a single object by its primary key.
   Future<T> findByPk(dynamic id) async {
