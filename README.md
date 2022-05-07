@@ -42,6 +42,7 @@ class Post implements SchemaObject {
 
   Post(this.uuid, this.content);
 
+  // We dont have a great way to capture this by the compiler, but this constructor IS REQUIRED.
   Post.fromMap(Map<String, dynamic> map) : this(map['uuid'], map['content']);
 
   @override
@@ -58,26 +59,26 @@ final _adapter = PostgresAdapter(
         username: "dart", password: "dart"));
 
 class PostsTable extends Table<Post> {
+  PostsTable() : super(name: 'posts');
   @override
   Adapter get adapter => _adapter;
 
-  @override
-  String get tableName => 'posts';
-
-  static final uuid = Column<String>('uuid');
+  static final uuid = Column<String>('uuid', primaryKey: true);
   static final content = Column<String>('content');
 }
 
 void main() async {
   var p = Post(
-    'abc-12345',
+    'abc-123',
     'This is a test post',
   );
 
   var table = PostsTable();
-
+  // For now, adapter opening and closing needs to be controlled by the user
   await _adapter.open();
 
+  // You should probably use migrations instead of something like this, but
+  // we're not your parents, so we won't stop you.
   await _adapter.connection.execute('''
     CREATE TABLE IF NOT EXISTS posts (
       uuid varchar(255) NOT NULL,
@@ -88,9 +89,13 @@ void main() async {
 
   await table.delete().where(PostsTable.uuid, '=', p.uuid).execute();
   await table.insert(p);
-
-  var post = await table.findById('abc-123', idColumn: 'uuid');
+  // update content
+  p.content = "fresh content only";
+  // persist updated content
+  await table.update(p).execute();
+  final post = await table.findByPk('abc-123');
   print(post.toMap());
+
   await _adapter.close();
 }
 ```

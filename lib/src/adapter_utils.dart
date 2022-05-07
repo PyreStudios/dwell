@@ -26,3 +26,21 @@ List<ColumnData> getTableColumns(Table table) {
 
   return stuff.toList();
 }
+
+Column getPrimaryKeyColumn(Table table) {
+  final tableClassMirror = reflectClass(table.runtimeType);
+  return tableClassMirror.declarations.entries
+      .where((element) =>
+          element.value is VariableMirror &&
+          (element.value as VariableMirror).isStatic)
+      .map((e) => tableClassMirror.getField(e.key).reflectee as Column)
+      .firstWhere((element) => element.primaryKey);
+}
+
+dynamic strQuote(value) {
+  if (value is String) {
+    return "'$value'";
+  } else {
+    return value;
+  }
+}

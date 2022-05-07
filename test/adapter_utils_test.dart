@@ -11,11 +11,6 @@ class Post implements SchemaObject {
   Post(this.uuid, this.content);
 
   @override
-  void fromMap(Map<String, dynamic> map) {
-    // TODO: implement fromMap
-  }
-
-  @override
   Map<String, dynamic> toMap() {
     // TODO: implement toMap
     throw UnimplementedError();
@@ -23,13 +18,11 @@ class Post implements SchemaObject {
 }
 
 class PostsTable extends Table<Post> {
+  PostsTable() : super(name: 'posts');
   @override
   Adapter get adapter => PostgresAdapter(
       connection: PostgreSQLConnection("localhost", 5432, "dart_test",
           username: "dart", password: "dart"));
-
-  @override
-  String get tableName => 'posts';
 
   static final uuid = Column<String>('uuid');
   static final content = Column<String>('content');

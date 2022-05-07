@@ -10,29 +10,38 @@ dynamic instantiateClassFromTable(Table table, Map<String, dynamic> arguments) {
 }
 
 class WhereClause {
-  Column col;
-  String comparator;
-  dynamic value;
+  final Column col;
+  final String comparator;
+  final dynamic value;
 
-  WhereClause(this.col, this.comparator, this.value);
+  const WhereClause(this.col, this.comparator, this.value);
 }
 
-class _BaseQuery {
+class SetClause {
+  final Column col;
+  final dynamic value;
+
+  const SetClause(this.col, this.value);
+}
+
+mixin WhereClauses {
   final List<WhereClause> _clauses = [];
-  final Table _table;
-  Table get table => _table;
   List<WhereClause> get clauses => _clauses;
 
   where(Column col, String comparator, dynamic value) {
-    _clauses.add(
-        WhereClause(col, comparator, value is String ? "'$value'" : value));
+    _clauses.add(WhereClause(col, comparator, value));
     return this;
   }
+}
+
+class _BaseQuery {
+  final Table _table;
+  Table get table => _table;
 
   _BaseQuery(this._table);
 }
 
-class Query extends _BaseQuery {
+class Query extends _BaseQuery with WhereClauses {
   var _limit = 0;
   var _offset = 0;
 
@@ -56,8 +65,8 @@ class Query extends _BaseQuery {
   Future<List<T>> collect<T extends SchemaObject>() async {
     final results = await table.adapter.query(this);
     return results
-        .map((e) => (instantiateClassFromTable(table, e[table.tableName])
-            as SchemaObject))
+        .map((e) =>
+            (instantiateClassFromTable(table, e[table.name]) as SchemaObject))
         .toList()
         .cast<T>();
   }
@@ -74,25 +83,20 @@ class Query extends _BaseQuery {
 
 class Update<T extends SchemaObject> extends _BaseQuery {
   T item;
+
   Update(Table table, this.item) : super(table);
 
-  @override
-  where(Column col, String comparator, dynamic value) {
-    return super.where(col, comparator, value) as Update<T>;
+  Future<void> execute() async {
+    await table.adapter.update(this);
   }
 }
 
 class Insert<T extends SchemaObject> extends _BaseQuery {
   T item;
   Insert(Table table, this.item) : super(table);
-
-  @override
-  where(Column col, String comparator, dynamic value) {
-    return super.where(col, comparator, value) as Insert<T>;
-  }
 }
 
-class Delete extends _BaseQuery {
+class Delete extends _BaseQuery with WhereClauses {
   Delete(Table table) : super(table);
 
   @override
