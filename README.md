@@ -14,8 +14,13 @@ and the Flutter guide for
 <p align="center">
   <h1 align="center">Dwell</h1>
   
-  <h2 align="center">A reflection based data abstraction layer for Dart.</h2>
+  <h2 align="center">A reflection based data abstraction layer for Dart</h2>
 </p>
+
+<!-- [![pub version](https://img.shields.io/pub/v/dwell)](https://img.shields.io/pub/v/dwell) -->
+[![codecov](https://codecov.io/gh/PyreStudios/dwell/branch/main/graph/badge.svg?token=CAK5MR60ZI)](https://codecov.io/gh/PyreStudios/dwell)
+<!-- [![points](https://img.shields.io/pub/points/dwell)](https://img.shields.io/pub/points/dwell)
+[![likes](https://img.shields.io/pub/points/dwell)](https://img.shields.io/pub/points/dwell) -->
 
 This package is intended for non-clientside development (servers, clis, etc). It uses reflection and will not work with Flutter (sorry). If you find this package useful, please voice your opinion on [keeping reflection around in dart here](https://github.com/dart-lang/sdk/issues/44489).
 
