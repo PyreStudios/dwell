@@ -10,10 +10,14 @@ class Post implements SchemaObject {
 
   Post(this.uuid, this.content);
 
+  Post.fromMap(Map<String, dynamic> map) : this(map['uuid'], map['content']);
+
   @override
   Map<String, dynamic> toMap() {
-    // TODO: implement toMap
-    throw UnimplementedError();
+    return {
+      'uuid': uuid,
+      'content': content,
+    };
   }
 }
 
