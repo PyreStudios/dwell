@@ -5,7 +5,8 @@ import 'package:postgres/postgres.dart';
 
 class PostgresAdapter implements Adapter {
   PostgreSQLConnection connection;
-  PostgresAdapter({required this.connection});
+  bool printQueries = false;
+  PostgresAdapter({required this.connection, this.printQueries = false});
 
   @override
   Future<void> open() async {
@@ -31,7 +32,9 @@ class PostgresAdapter implements Adapter {
         }
       }
     }
-    print(query);
+    if (printQueries) {
+      print(query);
+    }
 
     return connection.execute(query).then((value) {});
   }
@@ -46,7 +49,9 @@ class PostgresAdapter implements Adapter {
     var query =
         "INSERT INTO ${insert.table.dwellTableName} ($columnNames) VALUES ($values)";
 
-    print(query);
+    if (printQueries) {
+      print(query);
+    }
     return connection.execute(query).then((value) {});
   }
 
@@ -63,7 +68,9 @@ class PostgresAdapter implements Adapter {
     final query =
         "UPDATE ${update.table.dwellTableName} SET $values WHERE ${pkCol.columnName} = ${strQuote(item[pkCol.columnName])}";
 
-    print(query);
+    if (printQueries) {
+      print(query);
+    }
 
     return connection.execute(query).then((value) {});
   }
@@ -82,6 +89,10 @@ class PostgresAdapter implements Adapter {
           querySql += " AND ";
         }
       }
+    }
+
+    if (printQueries) {
+      print(querySql);
     }
     return connection.mappedResultsQuery(querySql);
   }

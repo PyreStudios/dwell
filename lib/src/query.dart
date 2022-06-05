@@ -65,8 +65,8 @@ class Query extends _BaseQuery with WhereClauses {
   Future<List<T>> collect<T extends SchemaObject>() async {
     final results = await table.adapter.query(this);
     return results
-        .map((e) => (instantiateClassFromTable(table, e[table.dwellTableName])
-            as SchemaObject))
+        .map((e) => (instantiateClassFromTable(
+            table, e[table.dwellTableName.toLowerCase()]) as SchemaObject))
         .toList()
         .cast<T>();
   }
