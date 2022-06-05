@@ -69,4 +69,9 @@ void main() {
     Mock mock = results.first;
     expect(mock.id, equals(1));
   });
+
+  test('query should return one item when finding via single', () async {
+    var result = await MockTable().query().single<Mock>();
+    expect(result.id, equals(1));
+  });
 }
