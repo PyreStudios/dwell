@@ -45,10 +45,8 @@ class Post implements SchemaObject {
   String uuid;
   String content;
 
-  Post(this.uuid, this.content);
-
-  // We dont have a great way to capture this by the compiler, but this constructor IS REQUIRED.
-  Post.fromMap(Map<String, dynamic> map) : this(map['uuid'], map['content']);
+  // Dwell only supports named parameters.
+  Post({required this.uuid, required this.content});
 
   @override
   Map<String, dynamic> toMap() {

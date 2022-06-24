@@ -6,7 +6,31 @@ dynamic instantiateClassFromTable(Table table, Map<String, dynamic> arguments) {
   final tableClassMirror = reflectClass(table.runtimeType);
   final generic = tableClassMirror.superclass!.typeArguments.first;
   final type = generic as ClassMirror;
-  return type.newInstance(Symbol('fromMap'), [arguments]).reflectee;
+
+  final MapEntry<Symbol, MethodMirror> constructor = type.declarations.entries
+      .where((element) => element.value is MethodMirror)
+      .map((e) => MapEntry(e.key, e.value as MethodMirror))
+      .cast<MapEntry<Symbol, MethodMirror>>()
+      .firstWhere((entry) =>
+          entry.value.isGenerativeConstructor &&
+          entry.value.simpleName == type.simpleName);
+
+  final Map<Symbol, dynamic> mappedArguments =
+      arguments.entries.fold({}, (curr, entry) {
+    final symbol = Symbol(entry.key);
+    try {
+      final parameter = constructor.value.parameters
+          .firstWhere((e) => e.simpleName == symbol);
+
+      curr[parameter.simpleName] = entry.value;
+
+      return curr;
+    } catch (_) {
+      // unable to find a match for argument and parameter. This is probably fine, right?
+      return curr;
+    }
+  });
+  return type.newInstance(Symbol(''), [], mappedArguments).reflectee;
 }
 
 class WhereClause {

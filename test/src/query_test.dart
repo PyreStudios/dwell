@@ -2,17 +2,20 @@ import 'package:dwell/dwell.dart';
 import 'package:test/test.dart';
 
 class Mock extends SchemaObject {
-  final id = 1;
+  final int id;
+  final String name;
   @override
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': 'mock',
+      'name': name,
     };
   }
 
-  // normally this would set properties on the object from the map
-  Mock.fromMap(Map<String, dynamic> map);
+  Mock({
+    required this.id,
+    this.name = 'mock',
+  });
 }
 
 class FakeAdapter extends Adapter {
@@ -68,6 +71,11 @@ void main() {
     var results = await MockTable().query().collect<Mock>();
     Mock mock = results.first;
     expect(mock.id, equals(1));
+  });
+
+  test('query should return one item when finding via single', () async {
+    var result = await MockTable().query().single<Mock>();
+    expect(result.id, equals(1));
   });
 
   test('query should return one item when finding via single', () async {
