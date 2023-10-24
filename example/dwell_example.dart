@@ -18,13 +18,6 @@ class Post implements SchemaObject {
   }
 }
 
-class PostObjectBuilder extends SchemaObjectBuilder<Post> {
-  @override
-  Post fromMap(Map m) {
-    return Post(uuid: m['uuid'], content: m['content']);
-  }
-}
-
 final _adapter = PostgresAdapter(
     connection: PostgreSQLConnection("localhost", 5432, "dart_test",
         username: "dart", password: "dart"));
@@ -44,7 +37,9 @@ class PostsTable extends Table<Post> {
       ];
 
   @override
-  SchemaObjectBuilder<Post> get builder => PostObjectBuilder();
+  Post buildFromRow(Map m) {
+    return Post(uuid: m['uuid'], content: m['content']);
+  }
 }
 
 void main() async {

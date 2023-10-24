@@ -18,13 +18,6 @@ class Mock extends SchemaObject {
   });
 }
 
-class MockBuilder extends SchemaObjectBuilder<Mock> {
-  @override
-  Mock fromMap(Map m) {
-    return Mock(id: m['id']);
-  }
-}
-
 class FakeAdapter extends Adapter {
   @override
   Future<void> close() {
@@ -74,7 +67,9 @@ class MockTable extends Table<Mock> {
   List<Column> get columns => [];
 
   @override
-  SchemaObjectBuilder<Mock> get builder => MockBuilder();
+  Mock buildFromRow(Map m) {
+    return Mock(id: m['id']);
+  }
 }
 
 void main() {

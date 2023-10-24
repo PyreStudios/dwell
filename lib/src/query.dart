@@ -36,7 +36,7 @@ class Query extends _BaseQuery with WhereClauses {
   var _limit = 0;
   var _offset = 0;
 
-  Query(Table table) : super(table);
+  Query(super.table);
 
   Query limit(int limit) {
     _limit = limit;
@@ -56,8 +56,7 @@ class Query extends _BaseQuery with WhereClauses {
   Future<List<T>> collect<T extends SchemaObject>() async {
     final results = await table.adapter.query(this);
     return results
-        .map(
-            (e) => table.builder.fromMap(e[table.dwellTableName.toLowerCase()]))
+        .map((e) => table.buildFromRow(e[table.dwellTableName.toLowerCase()]))
         .toList()
         .cast<T>();
   }
@@ -75,7 +74,7 @@ class Query extends _BaseQuery with WhereClauses {
 class Update<T extends SchemaObject> extends _BaseQuery {
   T item;
 
-  Update(Table table, this.item) : super(table);
+  Update(super.table, this.item);
 
   Future<void> execute() async {
     await table.adapter.update(this);
@@ -84,11 +83,11 @@ class Update<T extends SchemaObject> extends _BaseQuery {
 
 class Insert<T extends SchemaObject> extends _BaseQuery {
   T item;
-  Insert(Table table, this.item) : super(table);
+  Insert(super.table, this.item);
 }
 
 class Delete extends _BaseQuery with WhereClauses {
-  Delete(Table table) : super(table);
+  Delete(super.table);
 
   @override
   where(Column col, String comparator, dynamic value) {

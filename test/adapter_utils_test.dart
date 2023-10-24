@@ -21,13 +21,6 @@ class Post implements SchemaObject {
   }
 }
 
-class PostBuilder extends SchemaObjectBuilder<Post> {
-  @override
-  Post fromMap(Map m) {
-    return Post(m['uuid'], m['content']);
-  }
-}
-
 class PostsTable extends Table<Post> {
   PostsTable() : super(name: 'posts');
   @override
@@ -45,7 +38,9 @@ class PostsTable extends Table<Post> {
       ];
 
   @override
-  SchemaObjectBuilder<Post> get builder => PostBuilder();
+  Post buildFromRow(Map m) {
+    return Post(m['uuid'], m['content']);
+  }
 }
 
 void main() {

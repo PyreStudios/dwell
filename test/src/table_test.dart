@@ -17,15 +17,8 @@ class Mock extends SchemaObject {
   Mock.fromMap(Map<String, dynamic> map);
 }
 
-class MockBuilder extends SchemaObjectBuilder<Mock> {
-  @override
-  Mock fromMap(Map m) {
-    return Mock();
-  }
-}
-
 class FakeAdapter extends Adapter {
-  List<Map<String, dynamic>> _data = [];
+  final List<Map<String, dynamic>> _data = [];
 
   @override
   Future<void> close() {
@@ -81,7 +74,9 @@ class MockTable extends Table<Mock> {
       ];
 
   @override
-  SchemaObjectBuilder<Mock> get builder => MockBuilder();
+  Mock buildFromRow(Map m) {
+    return Mock();
+  }
 }
 
 void main() {
