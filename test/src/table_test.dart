@@ -17,6 +17,13 @@ class Mock extends SchemaObject {
   Mock.fromMap(Map<String, dynamic> map);
 }
 
+class MockBuilder extends SchemaObjectBuilder<Mock> {
+  @override
+  Mock fromMap(Map m) {
+    return Mock();
+  }
+}
+
 class FakeAdapter extends Adapter {
   List<Map<String, dynamic>> _data = [];
 
@@ -67,6 +74,14 @@ class MockTable extends Table<Mock> {
   Adapter get adapter => _adapter;
 
   static final UUID = Column('uuid', primaryKey: true);
+
+  @override
+  List<Column> get columns => [
+        MockTable.UUID,
+      ];
+
+  @override
+  SchemaObjectBuilder<Mock> get builder => MockBuilder();
 }
 
 void main() {

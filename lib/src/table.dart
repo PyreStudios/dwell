@@ -11,6 +11,8 @@ class Column<T> {
 abstract class Table<T extends SchemaObject> {
   String dwellTableName;
   Adapter get adapter;
+  List<Column> get columns;
+  SchemaObjectBuilder<T> get builder;
 
   Table({required String name}) : dwellTableName = name;
 
@@ -53,4 +55,8 @@ abstract class Table<T extends SchemaObject> {
 
 abstract class SchemaObject {
   Map<String, dynamic> toMap();
+}
+
+abstract class SchemaObjectBuilder<T extends SchemaObject> {
+  T fromMap(Map<dynamic, dynamic> m);
 }

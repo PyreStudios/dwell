@@ -18,6 +18,13 @@ class Post implements SchemaObject {
   }
 }
 
+class PostObjectBuilder extends SchemaObjectBuilder<Post> {
+  @override
+  Post fromMap(Map m) {
+    return Post(uuid: m['uuid'], content: m['content']);
+  }
+}
+
 final _adapter = PostgresAdapter(
     connection: PostgreSQLConnection("localhost", 5432, "dart_test",
         username: "dart", password: "dart"));
@@ -29,12 +36,21 @@ class PostsTable extends Table<Post> {
 
   static final uuid = Column<String>('uuid', primaryKey: true);
   static final content = Column<String>('content');
+
+  @override
+  List<Column> get columns => [
+        PostsTable.uuid,
+        PostsTable.content,
+      ];
+
+  @override
+  SchemaObjectBuilder<Post> get builder => PostObjectBuilder();
 }
 
 void main() async {
   var p = Post(
-    'abc-123',
-    'This is a test post',
+    uuid: 'abc-123',
+    content: 'This is a test post',
   );
 
   var table = PostsTable();

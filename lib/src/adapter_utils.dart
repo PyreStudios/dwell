@@ -1,40 +1,17 @@
-import 'dart:mirrors';
-
 import 'package:dwell/dwell.dart';
 
 class ColumnData {
-  final Type type;
   final String columnName;
-  final Symbol symbol;
 
-  const ColumnData(this.type, this.columnName, this.symbol);
+  const ColumnData(this.columnName);
 }
 
 List<ColumnData> getTableColumns(Table table) {
-  final tableClassMirror = reflectClass(table.runtimeType);
-  final stuff = tableClassMirror.declarations.entries
-      .where((element) =>
-          element.value is VariableMirror &&
-          (element.value as VariableMirror).isStatic)
-      .map((e) => MapEntry(e.key, e.value as VariableMirror))
-      .map((e) {
-    final item = tableClassMirror.getField(e.key).reflectee as Column;
-    final ritem = reflect(item);
-    return ColumnData(
-        ritem.type.typeArguments.first.reflectedType, item.columnName, e.key);
-  });
-
-  return stuff.toList();
+  return table.columns.map((e) => ColumnData(e.columnName)).toList();
 }
 
 Column getPrimaryKeyColumn(Table table) {
-  final tableClassMirror = reflectClass(table.runtimeType);
-  return tableClassMirror.declarations.entries
-      .where((element) =>
-          element.value is VariableMirror &&
-          (element.value as VariableMirror).isStatic)
-      .map((e) => tableClassMirror.getField(e.key).reflectee as Column)
-      .firstWhere((element) => element.primaryKey);
+  return table.columns.firstWhere((e) => e.primaryKey);
 }
 
 dynamic strQuote(value) {

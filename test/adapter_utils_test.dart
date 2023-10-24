@@ -21,6 +21,13 @@ class Post implements SchemaObject {
   }
 }
 
+class PostBuilder extends SchemaObjectBuilder<Post> {
+  @override
+  Post fromMap(Map m) {
+    return Post(m['uuid'], m['content']);
+  }
+}
+
 class PostsTable extends Table<Post> {
   PostsTable() : super(name: 'posts');
   @override
@@ -30,6 +37,15 @@ class PostsTable extends Table<Post> {
 
   static final uuid = Column<String>('uuid');
   static final content = Column<String>('content');
+
+  @override
+  List<Column> get columns => [
+        PostsTable.uuid,
+        PostsTable.content,
+      ];
+
+  @override
+  SchemaObjectBuilder<Post> get builder => PostBuilder();
 }
 
 void main() {
@@ -43,11 +59,7 @@ void main() {
       var col1 = cols[0];
       var col2 = cols[1];
       expect(col1.columnName, 'uuid');
-      expect(col1.type, String);
-      expect(col1.symbol, Symbol('uuid'));
       expect(col2.columnName, 'content');
-      expect(col2.type, String);
-      expect(col2.symbol, Symbol('content'));
     });
   });
 }

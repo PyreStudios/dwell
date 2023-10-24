@@ -1,17 +1,17 @@
 name: dwell
-description: A starting point for Dart libraries or applications.
+description: What if Dart had a nice data access library?
 version: 1.0.0
 # homepage: https://www.example.com
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 
 # dependencies:
 #   path: ^1.8.0
 
 dev_dependencies:
-  lints: ^1.0.0
-  test: ^1.16.0
+  lints: ^3.0.0
+  test: ^1.24.8
 dependencies: 
-  postgres: ^2.4.3
+  postgres: ^2.6.3
